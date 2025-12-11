@@ -3,26 +3,26 @@
 --------------------------------------------------
 -- 1) แสดงข้อมูลลูกค้าทั้งหมด
 SELECT id, name, email, phone
-FROM users; -- id, ชื่อ, email, เบอร์โทร
+FROM users; -- id, ชื่อ, email, เบอร์โทร -- ✅
 
 -- 2) แสดงรายชื่อสินค้า พร้อมราคา เรียงจากราคาสูงไปต่ำ
 SELECT name, price
 FROM products
-ORDER BY price DESC; -- เรียงจากแพงสุดลงต่ำสุด
+ORDER BY price DESC; -- เรียงจากแพงสุดลงต่ำสุด -- ✅
 
 -- 3) แสดงรายการประเภทสินค้าทั้งหมด
 SELECT id, name
-FROM categories; -- id และชื่อ category
+FROM categories; -- id และชื่อ category -- ✅
 
 -- 4) ดึงรายการสินค้าที่ stock น้อยกว่า 100 ชิ้น
 SELECT id, name, stock
 FROM products
-WHERE stock < 100; -- filter stock < 100
+WHERE stock < 100; -- filter stock < 100 -- ✅
 
 -- 5) หา product ที่ ราคามากกว่า 100 บาทขึ้นไป
 SELECT id, name, price
 FROM products
-WHERE price > 100; -- filter price > 100
+WHERE price > 100; -- filter price > 100-- ✅
 
 -- 6) ดูข้อมูล cart_items ทั้งหมด พร้อมชื่อ user และ product
 SELECT ci.id, ci.cart_id, ci.product_id, ci.quantity, ci.price_at_time,
@@ -31,8 +31,8 @@ FROM cart_items ci
 JOIN carts c ON ci.cart_id = c.id
 JOIN users u ON c.user_id = u.id
 JOIN products p ON ci.product_id = p.id;
--- join เพื่อดูชื่อ user และชื่อสินค้า
-
+-- join เพื่อดูชื่อ user และชื่อสินค้า 
+ -- ❌✅ (select * from cart_items;)
 --------------------------------------------------
 -- 7) แสดงสินค้าแต่ละตัว พร้อมชื่อหมวดหมู่
 -- product_name, category_name, price, stock
@@ -60,7 +60,7 @@ JOIN carts ca ON ci.cart_id = ca.id
 JOIN users u ON ca.user_id = u.id
 WHERE u.name = 'Alice'
   AND ca.status = 'active'
-GROUP BY ca.id;                           -- ให้รู้ว่าเป็น cart ไหน
+GROUP BY ca.id;                           -- ให้รู้ว่าเป็น cart ไหน -- ❌✅
 
 
 --------------------------------------------------
@@ -72,7 +72,7 @@ SELECT
     o.total_amount,                  -- • จำนวนเงินรวมในออเดอร์
     o.created_at                     -- • วันที่สร้างออเดอร์
 FROM orders o                        -- • ตารางออเดอร์
-JOIN users u ON o.user_id = u.id;    -- • เชื่อมกับลูกค้าแต่ละคน
+JOIN users u ON o.user_id = u.id;    -- • เชื่อมกับลูกค้าแต่ละคน -- ✅
 
 
 --------------------------------------------------
@@ -85,7 +85,7 @@ SELECT
     (oi.quantity * oi.price_at_time) AS line_total  -- • ราคารวม = จำนวน × price_at_time
 FROM order_items oi
 JOIN products p ON oi.product_id = p.id
-WHERE oi.order_id = 1;
+WHERE oi.order_id = 1;  -- ✅
 
 
 --------------------------------------------------
@@ -97,7 +97,7 @@ SELECT
 FROM categories c                    -- • หมวดหมู่ทั้งหมด
 LEFT JOIN products p ON c.id = p.category_id
                                      -- • left join เพื่อให้หมวดว่างก็ยังแสดง
-GROUP BY c.id;                       -- • จัดกลุ่มตามหมวดหมู่
+GROUP BY c.id;                       -- • จัดกลุ่มตามหมวดหมู่ -- ✅
 
 
 --------------------------------------------------
@@ -108,7 +108,12 @@ SELECT
     name,                            -- • ชื่อลูกค้า
     email                            -- • อีเมลที่ตรงเงื่อนไข
 FROM users
-WHERE email LIKE '%@example.com%';   -- • ค้นหา string ที่มี @example.com อยู่ในข้อความ
+WHERE email LIKE '%@example.com%';   -- • ค้นหา string ที่มี @example.com อยู่ในข้อความ 
+
+--- abc@example.com @example.com.abc 123@example.com.364 🔞
+--- %text เอาทุกอย่างที่ลงท้ายด้วย text (@#!$EAWSDAtext SADAStext sadas text)
+--- text% เอาทุกอย่างที่ขึ้นต้นด้วย text (tesxasdsadasdad text!@#QWSDAZD text asdsada) 
+-- ❌✅
 
 
 --------------------------------------------------
@@ -122,7 +127,7 @@ SELECT
 FROM products p
 JOIN categories c ON p.category_id = c.id
                                      -- • เชื่อม table เพื่อรู้ว่าสินค้าอยู่หมวดไหน
-WHERE c.name = 'Electronics';        -- • เฉพาะหมวด Electronics
+WHERE c.name = 'Electronics';        -- • เฉพาะหมวด Electronics -- ✅
 
 
 --------------------------------------------------
@@ -134,7 +139,7 @@ SELECT
     price                            -- • ราคา
 FROM products
 ORDER BY price ASC                   -- • เรียงจากถูก → แพง
-LIMIT 3;                             -- • เอาแค่ 3 อันดับแรก
+LIMIT 3;                             -- • เอาแค่ 3 อันดับแรก-- ✅
 
 
 --------------------------------------------------
@@ -146,7 +151,7 @@ SELECT
     SUM(oi.quantity * oi.price_at_time) AS total_revenue   -- • ใช้ price_at_time แทน oi.price
 FROM order_items oi
 JOIN products p ON oi.product_id = p.id
-GROUP BY oi.product_id;
+GROUP BY oi.product_id; -- ✅
 
 
 --------------------------------------------------
@@ -159,7 +164,7 @@ FROM order_items oi
 JOIN products p ON oi.product_id = p.id
 GROUP BY oi.product_id
 ORDER BY total_sold DESC                  -- • เรียงจากขายเยอะ → น้อย
-LIMIT 1;                                  -- • เอาอันดับ 1 เท่านั้น
+LIMIT 1;                                  -- • เอาอันดับ 1 เท่านั้น -- ✅
 
 
 --------------------------------------------------
@@ -172,7 +177,7 @@ FROM orders o
 JOIN users u ON o.user_id = u.id
 GROUP BY o.user_id
 ORDER BY total_spent DESC                 -- • เรียงจากใช้เงินมาก → น้อย
-LIMIT 1;                                  -- • เอาคนที่พีคที่สุด
+LIMIT 1;                                  -- • เอาคนที่พีคที่สุด -- ✅
 
 
 --------------------------------------------------
@@ -184,7 +189,7 @@ SELECT
     total_amount,                         -- • ยอดรวมในออเดอร์
     created_at                            -- • วันที่สร้าง
 FROM orders
-WHERE total_amount > 500;                 -- • เงื่อนไขยอดเกิน 500 บาท
+WHERE total_amount > 500;                 -- • เงื่อนไขยอดเกิน 500 บาท -- ✅
 
 
 --------------------------------------------------
@@ -196,7 +201,7 @@ SELECT
 FROM products p
 LEFT JOIN order_items oi ON p.id = oi.product_id
                                           -- • left join เพื่อเช็คว่าเคยมีใน order_items ไหม
-WHERE oi.product_id IS NULL;              -- • Null = ไม่มีรายการสั่งซื้อเลย
+WHERE oi.product_id IS NULL;              -- • Null = ไม่มีรายการสั่งซื้อเลย -- ✅
 
 
 --------------------------------------------------
@@ -210,4 +215,5 @@ JOIN products p ON p.category_id = c.id
 JOIN order_items oi ON oi.product_id = p.id
 GROUP BY c.id
 ORDER BY total_revenue DESC
-LIMIT 1;
+
+LIMIT 1; -- ✅
